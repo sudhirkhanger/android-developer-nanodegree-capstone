@@ -129,9 +129,9 @@ public class WordPressAsyncTask extends AsyncTask<String, Void, ArrayList<Post>>
                 JSONObject contentObject = item.getJSONObject("content");
                 String content = contentObject.getString("rendered");
 
-                int featured_media = item.getInt("featured_media");
+                String featured_media = item.getString("featured_media");
 
-                Post post = new Post(id, title, String.valueOf(featured_media), content);
+                Post post = new Post(id, title, featured_media, content);
                 postArrayList.add(post);
             }
         } catch (JSONException e) {

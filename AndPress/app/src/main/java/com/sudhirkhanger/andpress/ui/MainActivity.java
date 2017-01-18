@@ -49,7 +49,7 @@ public class MainActivity extends AppCompatActivity implements
         LoaderManager.LoaderCallbacks<Cursor> {
 
     public static final String LOG_TAG = MainActivity.class.getSimpleName();
-    public static final String WP_SITE_URL = "http://www.thejavaprogrammer.com/wp-json/wp/v2/posts?filter[posts_per_page]=10&fields=id,title,content,featured_media";
+    public static final String WP_SITE_URL = "https://api.myjson.com/bins/12tcmz";
 
     private RecyclerView recyclerView;
     private WordPressPostAdapter wordPressPostAdapter;
