@@ -21,6 +21,9 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.CursorLoader;
+import android.support.v4.content.Loader;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -31,10 +34,14 @@ import com.sudhirkhanger.andpress.R;
 import com.sudhirkhanger.andpress.adapter.WordPressPostAdapter;
 import com.sudhirkhanger.andpress.model.PostColumns;
 
-public class DetailActivity extends AppCompatActivity {
+public class DetailActivity extends AppCompatActivity
+        implements LoaderManager.LoaderCallbacks<Cursor> {
+
+    public static final String TAG = DetailActivity.class.getSimpleName();
 
     private Uri postUri;
-    public static final String TAG = DetailActivity.class.getSimpleName();
+    private WebView webView;
+    private static final int WEBVIEW_LOADER_ID = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,6 +49,8 @@ public class DetailActivity extends AppCompatActivity {
         setContentView(R.layout.activity_detail);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        webView = (WebView) findViewById(R.id.webview);
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -54,31 +63,43 @@ public class DetailActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         try {
-            if (getIntent() != null) {
-                if (getIntent().getExtras() != null) {
-                    String uriStr = getIntent().getExtras().
-                            getString(WordPressPostAdapter.INTENT_KEY_POST_URI);
-                    Log.e(TAG, "onCreate: " + uriStr);
-                    postUri = Uri.parse(uriStr);
-                }
+            if (getIntent() != null && getIntent().getExtras() != null) {
+                String uriStr = getIntent().getExtras().
+                        getString(WordPressPostAdapter.INTENT_KEY_POST_URI);
+                Log.e(TAG, "onCreate: " + uriStr);
+                postUri = Uri.parse(uriStr);
+                getSupportLoaderManager().initLoader(WEBVIEW_LOADER_ID, null, this);
             }
-
-            Cursor cursor = getContentResolver().query(
-                    postUri,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null);
-            cursor.moveToFirst();
-
-            String content = cursor.getString(
-                    cursor.getColumnIndex(PostColumns.CONTENT));
-
-            WebView webView = (WebView) findViewById(R.id.webview);
-            webView.loadData(content, "text/html", "UTF-8");
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    @Override
+    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+        return new CursorLoader(
+                this,
+                postUri,
+                null,
+                null,
+                null,
+                null);
+    }
+
+    @Override
+    public void onLoadFinished(Loader<Cursor> loader, Cursor cursor) {
+        if (cursor == null || cursor.getCount() < 1) {
+            return;
+        }
+
+        if (cursor.moveToFirst()) {
+            String content = cursor.getString(
+                    cursor.getColumnIndex(PostColumns.CONTENT));
+            webView.loadData(content, "text/html", "UTF-8");
+        }
+    }
+
+    @Override
+    public void onLoaderReset(Loader<Cursor> loader) {
     }
 }
