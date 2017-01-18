@@ -19,14 +19,24 @@ package com.sudhirkhanger.andpress.model;
 
 public class Post {
 
+    int id;
     String title;
     String image_url;
     String content;
 
-    public Post(String title, String image_url, String content) {
+    public Post(int id, String title, String image_url, String content) {
+        this.id = id;
         this.title = title;
         this.image_url = image_url;
         this.content = content;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public String getTitle() {
@@ -56,7 +66,8 @@ public class Post {
     @Override
     public String toString() {
         return "Post{" +
-                "title='" + title + '\'' +
+                "id=" + id +
+                ", title='" + title + '\'' +
                 ", image_url='" + image_url + '\'' +
                 ", content='" + content + '\'' +
                 '}';

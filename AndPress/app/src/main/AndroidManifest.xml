@@ -1,27 +1,41 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-          package="com.sudhirkhanger.andpress">
+    package="com.sudhirkhanger.andpress">
+
+    <uses-permission android:name="android.permission.INTERNET" />
 
     <application
-        android:name=".AndPressApplication"
+        android:name=".ui.AndPressApplication"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".MainActivity"
+            android:name=".ui.MainActivity"
             android:label="@string/app_name"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
-                <action android:name="android.intent.action.MAIN"/>
+                <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.LAUNCHER"/>
+                <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
         <provider
-            android:name="com.sudhirkhanger.andpress.model.generated.PostProvider"
+            android:name=".model.generated.PostProvider"
             android:authorities="com.sudhirkhanger.andpress.model.PostProvider"
-            android:exported="false"/>
+            android:exported="false" />
+
+        <activity
+            android:name=".ui.DetailActivity"
+            android:label="@string/title_activity_detail"
+            android:parentActivityName=".ui.MainActivity"
+            android:theme="@style/AppTheme.NoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.sudhirkhanger.andpress.ui.MainActivity" />
+        </activity>
     </application>
+
 </manifest>

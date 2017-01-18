@@ -18,9 +18,11 @@ package com.sudhirkhanger.andpress.model;
 
 
 import net.simonvt.schematic.annotation.AutoIncrement;
+import net.simonvt.schematic.annotation.ConflictResolutionType;
 import net.simonvt.schematic.annotation.DataType;
 import net.simonvt.schematic.annotation.NotNull;
 import net.simonvt.schematic.annotation.PrimaryKey;
+import net.simonvt.schematic.annotation.Unique;
 
 public interface PostColumns {
 
@@ -28,6 +30,11 @@ public interface PostColumns {
     @PrimaryKey
     @AutoIncrement
     public static final String _ID = "_id";
+
+    @DataType(DataType.Type.INTEGER)
+    @NotNull
+    @Unique(onConflict = ConflictResolutionType.REPLACE)
+    public static final String POST_ID = "post_id";
 
     @DataType(DataType.Type.TEXT)
     @NotNull

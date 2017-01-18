@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Sudhir Khanger
+ * Copyright 2017 Sudhir Khanger
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,16 +14,12 @@
  * limitations under the License.
  */
 
-package com.sudhirkhanger.andpress;
+package com.sudhirkhanger.andpress.rest;
 
-import android.app.Application;
+import com.sudhirkhanger.andpress.model.Post;
 
-import com.facebook.stetho.Stetho;
+import java.util.ArrayList;
 
-
-public class AndPressApplication extends Application {
-    public void onCreate() {
-        super.onCreate();
-        Stetho.initializeWithDefaults(this);
-    }
+public interface WordPressResponse {
+    void processFinish(ArrayList<Post> postArrayList);
 }
