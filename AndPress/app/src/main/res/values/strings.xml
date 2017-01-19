@@ -10,4 +10,6 @@
     <string name="desc_content">Post content</string>
     <string name="desc_ad">Advertisement</string>
     <string name="desc_list">Post list</string>
+    <string name="appwidget_text">EXAMPLE</string>
+    <string name="add_widget">Add widget</string>
 </resources>

@@ -120,11 +120,15 @@ public class DetailActivity extends AppCompatActivity
             if (TextUtils.isEmpty(featured_image)) {
                 Picasso.with(this)
                         .load(R.color.colorPrimaryDark)
+                        .resize(600, 200)
+                        .centerCrop()
                         .placeholder(R.color.colorPrimaryDark)
                         .into(featuredImageView);
             } else {
                 Picasso.with(this)
                         .load(featured_image)
+                        .resize(600, 200)
+                        .centerCrop()
                         .placeholder(R.color.colorPrimaryDark)
                         .into(featuredImageView);
             }

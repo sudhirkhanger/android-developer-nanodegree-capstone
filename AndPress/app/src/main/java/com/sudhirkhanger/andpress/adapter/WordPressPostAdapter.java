@@ -69,11 +69,15 @@ public class WordPressPostAdapter extends CursorRecyclerViewAdapter
         if (TextUtils.isEmpty(featured_image)) {
             Picasso.with(context)
                     .load(R.color.colorPrimaryDark)
+                    .resize(600, 200)
+                    .centerCrop()
                     .placeholder(R.color.colorPrimaryDark)
                     .into(viewHolder.imageView);
         } else {
             Picasso.with(context)
                     .load(featured_image)
+                    .resize(600, 200)
+                    .centerCrop()
                     .placeholder(R.color.colorPrimaryDark)
                     .into(viewHolder.imageView);
         }

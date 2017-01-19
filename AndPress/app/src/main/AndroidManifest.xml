@@ -27,7 +27,7 @@
         <provider
             android:name=".model.generated.PostProvider"
             android:authorities="com.sudhirkhanger.andpress.model.PostProvider"
-            android:exported="false" />
+            android:exported="true" />
 
         <activity
             android:name=".ui.DetailActivity"
@@ -38,6 +38,23 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.sudhirkhanger.andpress.ui.MainActivity" />
         </activity>
-    </application>
 
+        <receiver android:name=".widget.AndPressWidgetProvider">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+                <action android:name="com.sudhirkhanger.andpress.ACTION_DATA_UPDATED" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/and_press_widget_info" />
+        </receiver>
+
+        <service
+            android:name=".widget.AndPressWidgetService"
+            android:permission="android.permission.BIND_REMOTEVIEWS" />
+
+        <service android:name=".widget.AndPressWidgetIntentService" />
+
+    </application>
 </manifest>

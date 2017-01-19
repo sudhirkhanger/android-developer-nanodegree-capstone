@@ -16,7 +16,10 @@
 
 package com.sudhirkhanger.andpress.ui;
 
+import android.appwidget.AppWidgetManager;
+import android.content.ComponentName;
 import android.content.ContentProviderOperation;
+import android.content.Intent;
 import android.content.OperationApplicationException;
 import android.database.Cursor;
 import android.os.Bundle;
@@ -41,14 +44,18 @@ import com.sudhirkhanger.andpress.model.PostColumns;
 import com.sudhirkhanger.andpress.model.PostProvider;
 import com.sudhirkhanger.andpress.rest.WordPressAsyncTask;
 import com.sudhirkhanger.andpress.rest.WordPressResponse;
+import com.sudhirkhanger.andpress.widget.AndPressWidgetProvider;
 
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity implements
         LoaderManager.LoaderCallbacks<Cursor> {
 
+    public static final String ACTION_DATA_UPDATED =
+            "com.sudhirkhanger.andpress.ACTION_DATA_UPDATED";
+
     public static final String LOG_TAG = MainActivity.class.getSimpleName();
-    public static final String WP_SITE_URL = "https://api.myjson.com/bins/12tcmz";
+    public static final String WP_SITE_URL = "https://api.myjson.com/bins/gqho3";
 
     private RecyclerView recyclerView;
     private WordPressPostAdapter wordPressPostAdapter;
@@ -156,10 +163,21 @@ public class MainActivity extends AppCompatActivity implements
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor cursor) {
         recyclerView.setAdapter(new WordPressPostAdapter(this, cursor));
+        updateWidgets();
     }
 
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
         wordPressPostAdapter.swapCursor(null);
+    }
+
+    private void updateWidgets() {
+        ComponentName name = new ComponentName(this, AndPressWidgetProvider.class);
+        int[] ids = AppWidgetManager.getInstance(this).getAppWidgetIds(name);
+
+        Intent intent = new Intent(this, AndPressWidgetProvider.class);
+        intent.setAction(AppWidgetManager.ACTION_APPWIDGET_UPDATE);
+        intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, ids);
+        sendBroadcast(intent);
     }
 }
