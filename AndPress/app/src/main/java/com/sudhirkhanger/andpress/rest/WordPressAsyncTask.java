@@ -36,6 +36,11 @@ import java.util.ArrayList;
 public class WordPressAsyncTask extends AsyncTask<String, Void, ArrayList<Post>> {
 
     public static final String LOG_TAG = WordPressAsyncTask.class.getSimpleName();
+    public static final String ID = "id";
+    public static final String TITLE = "title";
+    public static final String RENDERED = "rendered";
+    public static final String CONTENT = "content";
+    public static final String FEATURED_MEDIA = "featured_media";
 
     public WordPressResponse delegate = null;
 
@@ -121,21 +126,21 @@ public class WordPressAsyncTask extends AsyncTask<String, Void, ArrayList<Post>>
             for (int i = 0; i < numberOfItems; i++) {
                 JSONObject item = baseJsonArray.getJSONObject(i);
 
-                int id = item.getInt("id");
+                int id = item.optInt(ID);
 
-                JSONObject titleObject = item.getJSONObject("title");
-                String title = titleObject.getString("rendered");
+                JSONObject titleObject = item.getJSONObject(TITLE);
+                String title = titleObject.optString(RENDERED);
 
-                JSONObject contentObject = item.getJSONObject("content");
-                String content = contentObject.getString("rendered");
+                JSONObject contentObject = item.getJSONObject(CONTENT);
+                String content = contentObject.optString(RENDERED);
 
-                String featured_media = item.getString("featured_media");
+                String featured_media = item.optString(FEATURED_MEDIA);
 
                 Post post = new Post(id, title, featured_media, content);
                 postArrayList.add(post);
             }
         } catch (JSONException e) {
-            Log.d(LOG_TAG, e.toString());
+            Log.e(LOG_TAG, "Problem parsing the WordPress JSON results", e);
         }
         return postArrayList;
     }

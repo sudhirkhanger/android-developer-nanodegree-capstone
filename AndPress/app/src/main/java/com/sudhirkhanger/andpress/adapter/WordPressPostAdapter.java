@@ -21,16 +21,18 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.squareup.picasso.Picasso;
 import com.sudhirkhanger.andpress.R;
 import com.sudhirkhanger.andpress.model.PostColumns;
 import com.sudhirkhanger.andpress.model.PostProvider;
-import com.sudhirkhanger.andpress.recycler_helper.CursorRecyclerViewAdapter;
 import com.sudhirkhanger.andpress.ui.DetailActivity;
 
 public class WordPressPostAdapter extends CursorRecyclerViewAdapter
@@ -48,15 +50,6 @@ public class WordPressPostAdapter extends CursorRecyclerViewAdapter
         this.cursor = cursor;
     }
 
-    public static class WordPressViewHolder extends RecyclerView.ViewHolder {
-        public TextView textView;
-
-        public WordPressViewHolder(View view) {
-            super(view);
-            textView = (TextView) view.findViewById(R.id.post_title);
-        }
-    }
-
     @Override
     public WordPressViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
@@ -69,9 +62,23 @@ public class WordPressPostAdapter extends CursorRecyclerViewAdapter
     public void onBindViewHolder(final WordPressViewHolder viewHolder, final Cursor cursor) {
 
         final String title = cursor.getString(cursor.getColumnIndex(PostColumns.TITLE));
+        final String featured_image = cursor.getString(
+                cursor.getColumnIndex(PostColumns.IMAGE_URL));
 
         viewHolder.textView.setText(title);
-        viewHolder.textView.setOnClickListener(new View.OnClickListener() {
+        if (TextUtils.isEmpty(featured_image)) {
+            Picasso.with(context)
+                    .load(R.color.colorPrimaryDark)
+                    .placeholder(R.color.colorPrimaryDark)
+                    .into(viewHolder.imageView);
+        } else {
+            Picasso.with(context)
+                    .load(featured_image)
+                    .placeholder(R.color.colorPrimaryDark)
+                    .into(viewHolder.imageView);
+        }
+
+        viewHolder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 int position = viewHolder.getAdapterPosition();
@@ -89,5 +96,16 @@ public class WordPressPostAdapter extends CursorRecyclerViewAdapter
     @Override
     public int getItemCount() {
         return cursor == null ? 0 : cursor.getCount();
+    }
+
+    public static class WordPressViewHolder extends RecyclerView.ViewHolder {
+        public TextView textView;
+        public ImageView imageView;
+
+        public WordPressViewHolder(View view) {
+            super(view);
+            textView = (TextView) view.findViewById(R.id.list_item_title);
+            imageView = (ImageView) view.findViewById(R.id.list_item_image);
+        }
     }
 }

@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "872450679873",
+    "firebase_url": "https://capstone-c3865.firebaseio.com",
+    "project_id": "capstone-c3865",
+    "storage_bucket": "capstone-c3865.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:872450679873:android:074a9dcf6c8159d4",
+        "android_client_info": {
+          "package_name": "com.sudhirkhanger.andpress"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "872450679873-ikcf7jqqrvmo3d42fj9ervvhgpmogkf5.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDDo5Wv8Jo5ibRWvp9gFA6c_qlPUr0ItS4"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

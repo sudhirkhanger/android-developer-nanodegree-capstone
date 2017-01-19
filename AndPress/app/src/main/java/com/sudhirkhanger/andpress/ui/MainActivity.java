@@ -21,8 +21,6 @@ import android.content.OperationApplicationException;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.os.RemoteException;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
@@ -33,8 +31,9 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
 import com.sudhirkhanger.andpress.R;
 import com.sudhirkhanger.andpress.adapter.WordPressPostAdapter;
 import com.sudhirkhanger.andpress.model.Post;
@@ -55,12 +54,27 @@ public class MainActivity extends AppCompatActivity implements
     private WordPressPostAdapter wordPressPostAdapter;
     private static final int WORDPRESS_LOADER_ID = 0;
 
+    public static final String[] POST_COLUMNS = {
+            PostColumns._ID,
+            PostColumns.POST_ID,
+            PostColumns.TITLE,
+            PostColumns.IMAGE_URL,
+            PostColumns.CONTENT
+    };
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        AdView mAdView = (AdView) findViewById(R.id.adView);
+        AdRequest adRequest = new AdRequest.Builder()
+                .addTestDevice(AdRequest.DEVICE_ID_EMULATOR)
+                .addTestDevice("5958710972D2BCB58D67C91E95E24602")
+                .build();
+        mAdView.loadAd(adRequest);
 
         recyclerView = (RecyclerView)
                 findViewById(R.id.recyclerview);
@@ -73,15 +87,6 @@ public class MainActivity extends AppCompatActivity implements
 
         recyclerView.setAdapter(
                 new WordPressPostAdapter(this, null));
-
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Data inserted", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
 
         new WordPressAsyncTask(new WordPressResponse() {
             @Override
@@ -142,7 +147,7 @@ public class MainActivity extends AppCompatActivity implements
         return new CursorLoader(
                 this,
                 PostProvider.Posts.CONTENT_URI,
-                null,
+                POST_COLUMNS,
                 null,
                 null,
                 null);
@@ -150,7 +155,6 @@ public class MainActivity extends AppCompatActivity implements
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor cursor) {
-//        wordPressPostAdapter.swapCursor(cursor);
         recyclerView.setAdapter(new WordPressPostAdapter(this, cursor));
     }
 

@@ -19,17 +19,19 @@ package com.sudhirkhanger.andpress.ui;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.util.Log;
-import android.view.View;
 import android.webkit.WebView;
+import android.widget.ImageView;
+import android.widget.TextView;
 
+import com.google.firebase.analytics.FirebaseAnalytics;
+import com.squareup.picasso.Picasso;
 import com.sudhirkhanger.andpress.R;
 import com.sudhirkhanger.andpress.adapter.WordPressPostAdapter;
 import com.sudhirkhanger.andpress.model.PostColumns;
@@ -38,10 +40,19 @@ public class DetailActivity extends AppCompatActivity
         implements LoaderManager.LoaderCallbacks<Cursor> {
 
     public static final String TAG = DetailActivity.class.getSimpleName();
+    public static final int FB_MIN = 5000;
+    public static final int TIMEOUT_DURATION = 1000000;
+    public static final String MIME_TYPE = "text/html";
+    public static final String ENCODING = "UTF-8";
+    public static final String ABOUT_BLANK = "about:blank";
 
     private Uri postUri;
     private WebView webView;
+    private ImageView featuredImageView;
+    private TextView titleTextView;
     private static final int WEBVIEW_LOADER_ID = 0;
+
+    private FirebaseAnalytics firebaseAnalytics;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,16 +61,15 @@ public class DetailActivity extends AppCompatActivity
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        webView = (WebView) findViewById(R.id.webview);
+        firebaseAnalytics = FirebaseAnalytics.getInstance(this);
+        firebaseAnalytics.setAnalyticsCollectionEnabled(true);
+        firebaseAnalytics.setMinimumSessionDuration(FB_MIN);
+        firebaseAnalytics.setSessionTimeoutDuration(TIMEOUT_DURATION);
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
+        webView = (WebView) findViewById(R.id.detail_webview);
+        featuredImageView = (ImageView) findViewById(R.id.detail_image);
+        titleTextView = (TextView) findViewById(R.id.detail_title);
+
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         try {
@@ -77,10 +87,11 @@ public class DetailActivity extends AppCompatActivity
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+        Log.e(TAG, "onCreateLoader");
         return new CursorLoader(
                 this,
                 postUri,
-                null,
+                MainActivity.POST_COLUMNS,
                 null,
                 null,
                 null);
@@ -88,18 +99,49 @@ public class DetailActivity extends AppCompatActivity
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor cursor) {
+        Log.e(TAG, "onLoadFinished");
         if (cursor == null || cursor.getCount() < 1) {
             return;
         }
 
         if (cursor.moveToFirst()) {
+
+            int id = cursor.getInt(
+                    cursor.getColumnIndex(PostColumns.POST_ID));
+            String title = cursor.getString(
+                    cursor.getColumnIndex(PostColumns.TITLE));
+            String featured_image = cursor.getString(
+                    cursor.getColumnIndex(PostColumns.IMAGE_URL));
             String content = cursor.getString(
                     cursor.getColumnIndex(PostColumns.CONTENT));
-            webView.loadData(content, "text/html", "UTF-8");
+
+            webView.loadData(content, MIME_TYPE, ENCODING);
+            titleTextView.setText(title);
+            if (TextUtils.isEmpty(featured_image)) {
+                Picasso.with(this)
+                        .load(R.color.colorPrimaryDark)
+                        .placeholder(R.color.colorPrimaryDark)
+                        .into(featuredImageView);
+            } else {
+                Picasso.with(this)
+                        .load(featured_image)
+                        .placeholder(R.color.colorPrimaryDark)
+                        .into(featuredImageView);
+            }
+
+            Bundle bundle = new Bundle();
+            bundle.putInt(FirebaseAnalytics.Param.ITEM_ID, id);
+            bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, title);
+            bundle.putString(FirebaseAnalytics.Param.CONTENT_TYPE, MIME_TYPE);
+            firebaseAnalytics.logEvent(FirebaseAnalytics.Event.SELECT_CONTENT, bundle);
         }
     }
 
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
+        Log.e(TAG, "onLoaderReset");
+        titleTextView.setText("");
+        featuredImageView.setImageResource(R.color.colorPrimaryDark);
+        webView.loadUrl(ABOUT_BLANK);
     }
 }

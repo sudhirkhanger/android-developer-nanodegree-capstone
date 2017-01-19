@@ -19,10 +19,10 @@ package com.sudhirkhanger.andpress.model;
 
 public class Post {
 
-    int id;
-    String title;
-    String image_url;
-    String content;
+    private int id;
+    private String title;
+    private String image_url;
+    private String content;
 
     public Post(int id, String title, String image_url, String content) {
         this.id = id;

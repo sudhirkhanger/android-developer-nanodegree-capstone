@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.sudhirkhanger.andpress.recycler_helper;
+package com.sudhirkhanger.andpress.adapter;
 
 import android.content.Context;
 import android.database.Cursor;

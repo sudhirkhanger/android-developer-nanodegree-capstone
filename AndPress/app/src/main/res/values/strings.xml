@@ -2,4 +2,12 @@
     <string name="app_name">AndPress</string>
     <string name="action_settings">Settings</string>
     <string name="title_activity_detail">DetailActivity</string>
+    <string name="banner_ad_unit_id">ca-app-pub-3940256099942544/6300978111</string>
+
+
+    <string name="desc_image">Featured image</string>
+    <string name="desc_title">Title of the post</string>
+    <string name="desc_content">Post content</string>
+    <string name="desc_ad">Advertisement</string>
+    <string name="desc_list">Post list</string>
 </resources>
