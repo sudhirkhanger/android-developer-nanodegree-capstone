@@ -34,6 +34,7 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
@@ -69,6 +70,8 @@ public class MainActivity extends AppCompatActivity implements
             PostColumns.CONTENT
     };
 
+    private static boolean itemsAvailable = false;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -95,12 +98,9 @@ public class MainActivity extends AppCompatActivity implements
         recyclerView.setAdapter(
                 new WordPressPostAdapter(this, null));
 
-        new WordPressAsyncTask(new WordPressResponse() {
-            @Override
-            public void processFinish(ArrayList<Post> postArrayList) {
-                insertData(postArrayList);
-            }
-        }).execute(WP_SITE_URL);
+        if (!itemsAvailable) {
+            update();
+        }
 
         getSupportLoaderManager().initLoader(WORDPRESS_LOADER_ID, null, this);
     }
@@ -112,6 +112,18 @@ public class MainActivity extends AppCompatActivity implements
         return true;
     }
 
+    private void update() {
+        new WordPressAsyncTask(new WordPressResponse() {
+            @Override
+            public void processFinish(ArrayList<Post> postArrayList) {
+                insertData(postArrayList);
+            }
+        }).execute(WP_SITE_URL);
+        itemsAvailable = true;
+        Toast.makeText(this, "Refreshing", Toast.LENGTH_SHORT).show();
+        Log.e(LOG_TAG, "update()");
+    }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle action bar item clicks here. The action bar will
@@ -121,6 +133,7 @@ public class MainActivity extends AppCompatActivity implements
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
+            update();
             return true;
         }
 
