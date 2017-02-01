@@ -1,5 +1,15 @@
 # Android Developer Nanodegree Capstone
 
+* The AndPress is part of Android Developer Nanodegree capstone project.
+It's purpose is to test the WordPress REST API 2.0.
+
+* The APIs used in this project is hosted at myjson.com.
+
+* The project makes use of title, the post content, featured
+image, and post count.
+
+* This project uses schematic library for database and
+content provider creation.
 
     Copyright 2016 Sudhir Khanger
 
